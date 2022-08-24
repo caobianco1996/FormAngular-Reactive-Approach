@@ -31,7 +31,7 @@ export class AppComponent implements OnInit {
     (<FormArray>this.signupForm.get('hobbies')).push(control);
   }
 
-  getControls() {
-    return (<FormArray>this.signupForm.get('hobbies')).controls;
+  get controls() {
+    return (this.signupForm.get('hobbies') as FormArray).controls;
   }
 }
