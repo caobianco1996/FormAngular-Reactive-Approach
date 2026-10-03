@@ -1,57 +1,83 @@
-<div class="container">
-  <div class="row">
-    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
-      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
-        <div formGroupName="userData">
-          <div class="form-group">
-            <label for="username">Username</label>
-            <input
-              type="text"
-              id="username"
-              formControlName="username"
-              class="form-control"
-            />
-            <span *ngIf="!signupForm.get('userData.username').valid && signupForm.get('userData.username').touched" 
-            class="help-block">
-            <span *ngIf="signupForm.get('userData.username').errors['nameIsForbidden']">This name is invalid</span>
-            <span *ngIf="signupForm.get('userData.username').errors['required']">This field is required</span>
-          </span>
-          </div>
-          <div class="form-group">
-            <label for="email">email</label>
-            <input
-              type="text"
-              id="email"
-              formControlName="email"
-              class="form-control"
-            />
-            <span *ngIf="!signupForm.get('userData.email').valid && signupForm.get('userData.email').touched" 
-            class="help-block">Insira um email valido</span>
-          </div>
+<main class="container">
+  <h1>Cadastro demonstrativo com formulário reativo</h1>
+  <p>Os dados são usados apenas no navegador e não são enviados a um servidor.</p>
 
-        </div>
-        
-        <div class="radio" *ngFor="let gender of genders">
-          <label>
-            <input type="radio" formControlName="gender" [value]="gender" />{{
-              gender
-            }}
-          </label>
-        </div>
-        <div formArrayName="hobbies">
-          <h4>Seus hobbies</h4>
-          <button class="btn btn-defaut" type="button" 
-          (click)="onAddHobby()">Adicione seus hobbies</button>
-          <div class="form-group" 
-          *ngFor="let hobbyControl of controls; let i = index">
-            <input type="text" class="form-control" [formControlName]="i">
-          </div>
-        </div>
+  <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" novalidate>
+    <section formGroupName="userData">
+      <div class="form-group">
+        <label for="username">Nome de demonstração</label>
+        <input
+          type="text"
+          id="username"
+          formControlName="username"
+          class="form-control"
+          autocomplete="off"
+          [attr.aria-invalid]="signupForm.get('userData.username')?.invalid && signupForm.get('userData.username')?.touched"
+          aria-describedby="username-error"
+        />
+        <span
+          id="username-error"
+          *ngIf="signupForm.get('userData.username')?.invalid && signupForm.get('userData.username')?.touched"
+          class="help-block"
+          role="alert"
+        >
+          <span *ngIf="signupForm.get('userData.username')?.hasError('nameIsForbidden')">Este nome está reservado para o exercício.</span>
+          <span *ngIf="signupForm.get('userData.username')?.hasError('required')">Informe um nome de demonstração.</span>
+        </span>
+      </div>
 
-        <span *ngIf="!signupForm.valid && signupForm.touched" 
-          class="help-block">Insira dados validos</span>
-        <button class="btn btn-primary" type="submit">Submit</button>
-      </form>
-    </div>
-  </div>
-</div>
+      <div class="form-group">
+        <label for="email">E-mail fictício</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          class="form-control"
+          autocomplete="off"
+          [attr.aria-invalid]="signupForm.get('userData.email')?.invalid && signupForm.get('userData.email')?.touched"
+          aria-describedby="email-error"
+        />
+        <span
+          id="email-error"
+          *ngIf="signupForm.get('userData.email')?.invalid && signupForm.get('userData.email')?.touched"
+          class="help-block"
+          role="alert"
+        >Informe um e-mail fictício válido.</span>
+      </div>
+    </section>
+
+    <fieldset class="form-group">
+      <legend>Gênero (demonstração)</legend>
+      <div class="radio" *ngFor="let gender of genders">
+        <label>
+          <input type="radio" formControlName="gender" [value]="gender" />
+          {{ gender }}
+        </label>
+      </div>
+    </fieldset>
+
+    <section formArrayName="hobbies">
+      <h2>Hobbies fictícios</h2>
+      <button class="btn btn-default" type="button" (click)="onAddHobby()">
+        Adicionar hobby
+      </button>
+      <div class="form-group" *ngFor="let hobbyControl of controls; let i = index">
+        <label [for]="'hobby-' + i">Hobby {{ i + 1 }}</label>
+        <input
+          type="text"
+          class="form-control"
+          [id]="'hobby-' + i"
+          [formControlName]="i"
+          autocomplete="off"
+        />
+      </div>
+    </section>
+
+    <p *ngIf="signupForm.invalid && signupForm.touched" class="help-block" role="alert">
+      Corrija os campos obrigatórios antes de continuar.
+    </p>
+    <button class="btn btn-primary" type="submit" [disabled]="signupForm.invalid || signupForm.pending">
+      Validar demonstração
+    </button>
+  </form>
+</main>
