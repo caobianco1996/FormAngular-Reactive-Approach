@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { FormArray, FormControl, FormGroup, Validators } from "@angular/forms";
-import { promise } from "protractor";
 import { Observable } from "rxjs";
 
 @Component({
@@ -11,65 +10,58 @@ import { Observable } from "rxjs";
 export class AppComponent implements OnInit {
   genders = ["male", "female"];
   signupForm: FormGroup;
-  forbiddenUsernames = ['Chris', 'Ana'];
+  forbiddenUsernames = ["Chris", "Ana"];
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.signupForm = new FormGroup({
-      'userData' : new FormGroup({
-        'username': new FormControl(null, [Validators.required, this.forbiddenNames.bind(this)]),
-        'email': new FormControl(null, [Validators.required, Validators.email], this.forbiddenEmails),
-
+      userData: new FormGroup({
+        username: new FormControl(null, [
+          Validators.required,
+          this.forbiddenNames.bind(this),
+        ]),
+        email: new FormControl(
+          null,
+          [Validators.required, Validators.email],
+          this.forbiddenEmails
+        ),
       }),
-      'gender': new FormControl("male"),
-      'hobbies': new FormArray([])
-    });
-    this.signupForm.valueChanges.subscribe(
-      (value) => console.log(value)
-    );
-    this.signupForm.statusChanges.subscribe(
-      (status) => console.log(status)
-    );
-    this.signupForm.setValue({
-      'userData': {
-        'username' : 'Max',
-        'email' : 'max@test.com'
-      },
-      'gender' : 'male',
-      'hobbies' : []
+      gender: new FormControl("male"),
+      hobbies: new FormArray([]),
     });
   }
 
-  onSubmit() {
-    console.log(this.signupForm);
-    this.signupForm.reset();
+  onSubmit(): void {
+    if (this.signupForm.invalid) {
+      this.signupForm.markAllAsTouched();
+      return;
+    }
+
+    // O exemplo não envia os dados; evita registrar informações pessoais no console.
+    this.signupForm.reset({ gender: "male" });
   }
 
-  onAddHobby(){
+  onAddHobby(): void {
     const control = new FormControl(null, Validators.required);
-    (<FormArray>this.signupForm.get('hobbies')).push(control);
+    (this.signupForm.get("hobbies") as FormArray).push(control);
   }
 
   get controls() {
-    return (this.signupForm.get('hobbies') as FormArray).controls;
-  }
-  forbiddenNames(control: FormControl) : {[s: string]: boolean}{
-    if (this.forbiddenUsernames.indexOf(control.value) !== -1 ){
-      return {'nameIsForbidden' : true};
-    }
-    return null;
+    return (this.signupForm.get("hobbies") as FormArray).controls;
   }
 
-  forbiddenEmails(control: FormControl): Promise<any> | Observable<any>  {
-    const promise = new Promise<any>((resolve, reject)=>{
+  forbiddenNames(control: FormControl): { [key: string]: boolean } | null {
+    return this.forbiddenUsernames.includes(control.value)
+      ? { nameIsForbidden: true }
+      : null;
+  }
+
+  forbiddenEmails(control: FormControl): Promise<any> | Observable<any> {
+    return new Promise((resolve) => {
       setTimeout(() => {
-        if (control.value === 'test@test.com'){
-          resolve({'emailIsForbidden' : true});
-
-        }else{
-          resolve(null);
-        }
-      },1500);
+        resolve(
+          control.value === "test@test.com" ? { emailIsForbidden: true } : null
+        );
+      }, 500);
     });
-    return promise;
   }
 }
