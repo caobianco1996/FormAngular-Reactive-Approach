@@ -1,32 +1,33 @@
-import { TestBed, async } from '@angular/core/testing';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        AppComponent
-      ],
-    });
-    TestBed.compileComponents();
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [CommonModule, ReactiveFormsModule],
+      declarations: [AppComponent],
+    }).compileComponents();
   });
 
-  it('should create the app', async(() => {
+  it('should create the app', () => {
     const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  }));
+    expect(fixture.componentInstance).toBeTruthy();
+  });
 
-  it(`should have as title 'app works!'`, async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('app works!');
-  }));
-
-  it('should render title in a h1 tag', async(() => {
+  it('should render the reactive form heading', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('app works!');
-  }));
+    const heading = (fixture.nativeElement as HTMLElement).querySelector('h1');
+    expect(heading?.textContent).toContain('formulário reativo');
+  });
+
+  it('should start with an empty demonstration form', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const app = fixture.componentInstance;
+    expect(app.signupForm.get('userData.username')?.value).toBeNull();
+    expect(app.signupForm.get('userData.email')?.value).toBeNull();
+  });
 });
