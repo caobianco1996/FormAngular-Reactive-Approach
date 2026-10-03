@@ -1,14 +1,33 @@
-# FormAngular Reactive Approach
+# Formulário Angular — abordagem reativa
 
-Exercício de formulários reativos em Angular com validação, grupo de dados e hobbies dinâmicos.
+Exercício Angular 11 sobre formulários reativos, validação, grupos de dados e hobbies dinâmicos. Os dados ficam no navegador e não são enviados a um servidor.
 
-## Executar
+## Requisitos e execução
 
-```sh
+- Node.js compatível com Angular CLI 11 e as dependências antigas do projeto
+- npm
+
+Na raiz do repositório:
+
+~~~sh
 npm ci
 npm start
-```
+~~~
 
-Build e testes: `npm run build` e `npm test`.
+Abra http://localhost:4200.
 
-O projeto usa Angular 11 e contém dependências de ferramentas E2E antigas. Os dados são locais e não são enviados a um servidor. Atualize a stack e substitua os testes padrão do Angular por casos de validação do formulário antes de reutilizar o código.
+## Build, testes e lint
+
+~~~sh
+npm run build
+npm test
+npm run lint
+~~~
+
+O runner de teste usa Karma e pode exigir um navegador compatível. O comando E2E npm run e2e está definido, mas depende da configuração e ferramentas antigas do Protractor incluídas no projeto; pode não funcionar em ambientes atuais.
+
+Na verificação manual, envie o formulário vazio, teste valores inválidos, adicione/remova hobbies e confira as mensagens de validação.
+
+## Manutenção
+
+A stack Angular 11 e ferramentas de lint/E2E estão antigas. Atualize as dependências e substitua os testes padrão por casos específicos de validação antes de reutilizar o projeto.
